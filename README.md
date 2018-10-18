@@ -4,10 +4,26 @@
 [![License](https://img.shields.io/cocoapods/l/RappleProgressHUD.svg?style=flat)](http://cocoapods.org/pods/RappleProgressHUD)
 [![Platform](https://img.shields.io/cocoapods/p/RappleProgressHUD.svg?style=flat)](http://cocoapods.org/pods/RappleProgressHUD)
 
-##Requirements
-- Swift 3
-- Xcode 8
-- iOS 8+
+
+User-friendly and easy to use activity / progress indicator view with Swift 4.2
+
+[Please use version 3.x for Swift 4.2 builds]
+[Please use version 2.4.1 for Swift 4 builds]
+[Please use version 2.3.1 for Swift 3 builds]
+
+## Demo
+
+![demo](Example/Demo/progress225.gif)
+
+## Requirements
+- Swift 4.2
+- Xcode 10
+- iOS 10+
+
+### Please use version 3.x for Swift 4.2 builds
+### Please use version 2.4.1 for Swift 4 builds
+### Please use version 2.3.1 for Swift 3 builds
+
 
 ## Installation
 RappleProgressHUD is available through [CocoaPods](http://cocoapods.org). To install it, simply add the following line to your Podfile:
@@ -24,15 +40,11 @@ import RappleProgressHUD
 </BR>
 
 RappleActivityIndicatorView can be started using any of the starter methods mentioned below. 
-When calling these starter methods, two basic input values are required to customize UIs.
+When calling these starter methods, two basic optional input values can be used to customize UIs.
 
-#### `label` 
+**`label`** this is the text value you are gonna display with the animated indicator
 
-this is the text value we are gonna display with the animated indicator
-
-#### `attributes` 
-
-this is a dictionary with following Keys.
+**`attributes`** this is a dictionary with following Keys.
 
 - `RappleTintColorKey`               Color of the progress circle and text
 - `RappleScreenBGColorKey`           Background color (full screen background)
@@ -40,11 +52,13 @@ this is a dictionary with following Keys.
 - `RappleIndicatorStyleKey`          Style of the ActivityIndicator - see below section for styles
 - `RappleProgressBarColorKey`        Progress bar bg color - track bg color
 - `RappleProgressBarFillColorKey`    Progress bar filling color with progression - filled track color
+- `RappleIndicatorThicknessKey`      ActivityIndicator thicknes(width) - applicable for 'RappleStyleCircle' and completion indicators
 
-In above dictionary we can send 'RappleIndicatorStyleKey' with two styles (see the demo for more details)
+In above dictionary you can send 'RappleIndicatorStyleKey' with below three styles (see the demo for more details)
 
-- `RappleStyleApple`              Default Apple ActivityIndicator
-- `RappleStyleCircle`             Custom Circular ActivityIndicator
+- `RappleStyleApple`                Default Apple ActivityIndicator
+- `RappleStyleCircle`               Custom Circular ActivityIndicator
+- `RappleStyleText`                 Custom Texual ActivityIndicator (e.g. Loading.. | Loading....)
 
 
 RappleActivityIndicatorView has two pre-defines attribute sets for ease of use
@@ -57,6 +71,7 @@ RappleActivityIndicatorView has two pre-defines attribute sets for ease of use
 - `RappleIndicatorStyleKey`          RappleStyleApple
 - `RappleProgressBarColorKey`        lightGray
 - `RappleProgressBarFillColorKey`    white
+- `RappleIndicatorThicknessKey`      4.0
 
 #### `RappleModernAttributes`  Predefined attribute dictionary with modern look & feel
 
@@ -66,9 +81,28 @@ RappleActivityIndicatorView has two pre-defines attribute sets for ease of use
 - `RappleIndicatorStyleKey`          RappleStyleCircle
 - `RappleProgressBarColorKey`        lightGray
 - `RappleProgressBarFillColorKey`    white
+- `RappleIndicatorThicknessKey`      4.0
 
-Or we can send any custom made dictionary with these Key values to customize the look and feel
+#### `RappleTextAttributes`  Predefined attribute dictionary with modern look & feel
 
+- `RappleTintColorKey`               white
+- `RappleScreenBGColorKey`           white: 0.0, alpha: 0.5
+- `RappleProgressBGColorKey`         N/A
+- `RappleIndicatorStyleKey`          RappleStyleText
+- `RappleProgressBarColorKey`        N/A
+- `RappleProgressBarFillColorKey`    N/A
+- `RappleIndicatorThicknessKey`      4.0
+
+Or you can send any custom made dictionary with these Key values to customize the look and feel
+
+to create custom attribute dictionary you can use below method, and all the parameters of this method comes with default values.
+
+```ruby
+let attributes = RappleActivityIndicatorView.attribute(style: RappleStyle.apple, tintColor: .yellow, screenBG: .purple, progressBG: .black, progressBarBG: .orange, progreeBarFill: .red, thickness: 4)
+
+let attributes = RappleActivityIndicatorView.attribute(style: RappleStyle.apple, tintColor: .yellow, progreeBarFill: .red, thickness: 2)
+
+```
 
 #### RappleActivityIndicatorView starter methods
 
@@ -99,19 +133,31 @@ RappleActivityIndicatorView.stopAnimating()
 
 RappleActivityIndicatorView can also be closed with completion indicator
 ```ruby
-RappleActivityIndicatorView.stopAnimating(showCompletion: true, completionLabel: "Completed.", completionTimeout: 2.0)
+RappleActivityIndicatorView.stopAnimation(completionIndicator: .success, completionLabel: "Completed.", completionTimeout: 1.0)
 ```
+
+You can use any of the following RappleCompletion enum values as the indicator
+- `none`             Stop and hide animation with out completion indicator
+- `success`          ✓ symbol
+- `failed`           ✕ symbol
+- `incomplete`       ! symbol
+- `unknown`          ? symbol
 
 #### Start RappleActivityIndicatorView’s progress value
 
-progress amount 0<= progress <= 1.0</br>
-    textual progress amount value (e.g. `"3/8"` or `"3/10"`) : limited space available</br>
-    textValue `nil`   -> percentage value (e.g. 78%)</br>
-    textValue `""`-> hide textual progress amount</br>
-    `RappleStyleApple` will use default apple progress bar</br>
-    `RappleStyleCircle` will use circular progress bar
+- progress amount 0<= progress <= 1.0
+- textual progress amount value (e.g. `"3/8"` or `"3/10"`) : limited space available
+- textValue `nil` will display percentage values (e.g. 78%)
+- textValue `""`-> hide textual progress amount
+- `RappleStyleApple` will use default apple progress bar
+- `RappleStyleCircle` will use circular progress bar
+- `RappleStyleText` will not display any progress bar
 ```ruby
 RappleActivityIndicatorView.setProgress(0.2, textValue: "1/5")
+```
+
+```ruby
+RappleActivityIndicatorView.setProgress(0.2) // Display with percentage value
 ```
 
 #### How to add progress bar
@@ -132,15 +178,9 @@ Check for RappleActivityIndicatorView visiblility
 RappleActivityIndicatorView.isVisible()
 ```
 
-
-###Demo
-![demo](Example/Demo/progress.gif)
-
 ## Example Project
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-Check [CocoaPodTester](https://github.com/rjeprasad/iSwift.tech/tree/master/CocoaPodTester) project for more 
 
 ## Author
 
@@ -149,7 +189,7 @@ Rajeev Prasad, rjeprasad@gmail.com
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2016 Rajeev Prasad <rjeprasad@gmail.com>
+Copyright (c) 2015-2018 Rajeev Prasad <rjeprasad@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
